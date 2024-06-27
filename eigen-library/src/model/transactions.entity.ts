@@ -1,52 +1,58 @@
+// Import necessary modules and functions from prisma and local types
 import { DB, prismaErrHandler } from "@/libs/prisma";
 import { ReturnTransaction, Transaction } from "@/types/defs";
 
+// Define an async function to add a transaction
 export const addTransaction = async (body: Transaction): Promise<Transaction | undefined> => {
     try {
+        // Start a transaction in the database
         return await DB.$transaction(async (model) => {
-            let bookList: any[] = []
-            // first we need to update the stock
+            let bookList: any[] = [];
+            // Update the stock for each item in the transaction details
             body.details?.forEach(async items => {
                 const status = await model.book.update({
                     where: {
-                        code: items
+                        code: items // Identify the book by its code
                     },
                     data: {
-                        stock: { decrement: 1 }
+                        stock: { decrement: 1 } // Decrease the stock by 1
                     }
-                })
-                // if the stock return negative value
-                // all transaction will be fail and throwing an error
+                });
+                // If stock becomes negative, throw an error to abort the transaction
                 if (status.stock < 0) {
-                    throw new Error(`Cannot borrow this book: ${items}`)
+                    throw new Error(`Cannot borrow this book: ${items}`);
                 } else {
+                    // If stock update is successful, add the book to the book list
                     bookList.push({
                         isbn: items
-                    })
+                    });
                 }
             });
-            // if the stock update succeeded, then store the transaction data
+            // If stock updates succeeded, create a new transaction record
             let today = new Date();
             return await model.transaction.create({
                 data: {
-                    date: today,
-                    memberCode: body.memberCode,
-                    returnDate: new Date(today.setDate(today.getDate() + 7)),
-                    status: 'Open',
+                    date: today, // Set the transaction date to today
+                    memberCode: body.memberCode, // Set the member code
+                    returnDate: new Date(today.setDate(today.getDate() + 7)), // Set the return date to one week from today
+                    status: 'Open', // Set the status to 'Open'
                     details: {
-                        create: bookList
+                        create: bookList // Add the book list to the transaction details
                     }
                 }
-            })
+            });
         });
     } catch (error: unknown) {
         prismaErrHandler(error);
     }
 }
+
+// Define an async function to add a return transaction
 export const addReturnTransaction = async (body: ReturnTransaction): Promise<object | undefined> => {
     try {
+        // Start a transaction in the database
         return await DB.$transaction(async (model) => {
-            // get the transaction date base on ISBN
+            // Find the transaction data based on the member code and status
             const tdata: any = await model.transaction.findFirst({
                 where: {
                     AND: [
@@ -54,48 +60,47 @@ export const addReturnTransaction = async (body: ReturnTransaction): Promise<obj
                         { status: 'Open' }
                     ]
                 },
-                include: { details: { select: { isbn: true } } }
+                include: { details: { select: { isbn: true } } } // Include the transaction details
             });
-            // create return transaction
+            // Create a new return transaction record
             const returning = await model.returnTransaction.create({
                 data: {
-                    date: new Date(),
-                    transId: tdata.id
+                    date: new Date(), // Set the return date to today
+                    transId: tdata.id // Set the transaction ID
                 }
             });
             const currentDate = new Date();
-            // If the book is returned after the time limit has been exceeded,
-            // member will be penalized
+            // If the book is returned late, penalize the member
             if (new Date(tdata.returnDate) < currentDate) {
                 await model.member.update({
                     data: {
-                        penalize: true
+                        penalize: true // Set the penalize flag to true
                     },
                     where: {
-                        code: body.memberCode
+                        code: body.memberCode // Identify the member by their code
                     }
-                })
+                });
             }
-            // update book quantity
+            // Update the stock for all books in the transaction
             await model.book.updateMany({
                 where: {
                     code: { in: tdata.details }
                 },
                 data: {
-                    stock: { increment: 1 }
+                    stock: { increment: 1 } // Increase the stock by 1
                 }
-            })
-            // closed the transaction
+            });
+            // Close the original transaction by updating its status
             await model.transaction.update({
                 where: {
-                    id: tdata.id
+                    id: tdata.id // Identify the transaction by its ID
                 },
                 data: {
-                    status: 'Closed'
+                    status: 'Closed' // Set the status to 'Closed'
                 }
-            })
-            return returning
-        })
+            });
+            return returning; // Return the return transaction record
+        });
     } catch (error: unknown) {
         prismaErrHandler(error);
     }
