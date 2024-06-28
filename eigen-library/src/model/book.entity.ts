@@ -22,10 +22,21 @@ export const list = async (): Promise<object | undefined> => {
         prismaErrHandler(error);
     }
 }
+
 export const add = async (body: Book): Promise<Book | undefined> => {
     try {
-        const res = await DB.book.create({
-            data: {
+        return await DB.$transaction(async model => {
+            const exist = await model.author.findFirst({
+                where: {
+                    name: { equals: body.author }
+                }
+            })
+            let createQuery = exist ? {
+                code: body.code,
+                stock: body.stock,
+                title: body.title,
+                authorId: exist.id
+             } : {
                 code: body.code,
                 stock: body.stock,
                 title: body.title,
@@ -34,18 +45,19 @@ export const add = async (body: Book): Promise<Book | undefined> => {
                         name: body.author
                     }
                 }
-            },
-            include: {
-                author: true
-            }
-        });
-        return {
-            id: res.id,
-            code: res.code,
-            title: res.title,
-            stock: res.stock,
-            author: res.author.name
-        }
+             }
+             const res = await model.book.create({
+                data: createQuery,
+                include: { author: true }
+             })
+             return {
+                 id: res.id,
+                 code: res.code,
+                 title: res.title,
+                 stock: res.stock,
+                 author: res.author.name
+             }
+        })
     } catch (error) {
         prismaErrHandler(error);
     }
