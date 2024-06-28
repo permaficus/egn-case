@@ -28,7 +28,7 @@ export const add = async (body: Book): Promise<Book | undefined> => {
         return await DB.$transaction(async model => {
             const exist = await model.author.findFirst({
                 where: {
-                    name: { equals: body.author }
+                    name: { equals: body.author, mode: 'insensitive' }
                 }
             })
             let createQuery = exist ? {
