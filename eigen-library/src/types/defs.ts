@@ -1,5 +1,12 @@
+import { Request, Response, NextFunction } from 'express';
+
+export interface HttpIncoming {
+    req?: Request
+    res?: Response
+    next?: NextFunction
+}
 export interface Author {
-    id: string
+    id?: string
     name: string
 }
 export interface Book {
@@ -7,20 +14,21 @@ export interface Book {
     code: string
     title: string
     stock: number
-    authorId: string
+    author: string
 }
 export interface Member {
     id?: string
     code: string
     name: string
     penalized?: boolean
+    until?: Date
 }
 export interface Transaction {
     id?: string
-    date: Date
-    returnDate: Date
+    date?: Date
+    returnDate?: Date
     memberCode: string
-    details?: any[]
+    books?: any[]
 }
 export interface Details {
     id?: string
