@@ -19,81 +19,56 @@
     ],
     "tags": [
       {
-        "name": "Endpoints",
-        "description": "Everything about Eigen Library API endpoints"
+        "name": "Authors",
+        "description": "Everything about Author API endpoints"
+      },
+      {
+        "name": "Books",
+        "description": "Everything about Books API endpoints"
       }
     ],
     "paths": {
-        "/api/v1/book": {
+        "/api/v1/authors": {
             "get": {
                 "tags": [
-                    "Endpoints"
+                    "Authors"
                 ],
-                "summary": "Book List",
-                "parameters": [
-                    {
-                        "name": "logsid",
-                        "in": "path",
-                        "description": "Log ID for viewing selected log history", 
-                        "required": false
-                    },
-                    {
-                        "name": "logtype",
-                        "in": "query",
-                        "description": "Logging type such as Error, Warning, Info and Debug",
-                        "default": "error",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": ["error", "debug", "info", "warning"]
-                        }
-                    }
-                ],
+                "summary": "Author List",
                 "responses": {
                     "200": {
                         "description": "Success Response",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/GetLogsHistory"
+                                    "$ref": "#/definitions/AuthorList"
                                 }
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "client_id": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
-                    "Endpoints"
+                    "Authors"
                 ],
-                "summary": "Storing any logs dumped from 5log SDK or other client",
+                "summary": "Add New Author",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/errorPayload"
+                                "$ref": "#/definitions/AddNewAuthor"
                             }
                         }
                     },
                     "required": true
                 },
-                "security": [
-                    {
-                        "client_id": []
-                    }
-                ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Success Response",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/postResponse"
+                                    "$ref": "#/definitions/NewAuthorResponse"
                                 }
                             }
                         }
@@ -101,21 +76,57 @@
                 }
             }
         },
-        "/api/v1/member": {
-
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "client_id": {
-                "type": "apiKey",
-                "name": "client_id",
-                "in": "header"
+        "/api/v1/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Book List",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/BookList"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Add New Book",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AddNewBook"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/NewBookResponse"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
-        "GetLogsHistory": {
+        "AuthorList": {
             "type": "object",
             "properties": {
                 "status": {
@@ -129,92 +140,65 @@
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/LogsHistoryDetails"
+                        "$ref": "#/definitions/AuthorListDetails"
                     }
                 }
             }
         },
-        "LogsHistoryDetails": {
+        "AuthorListDetails": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "string",
                     "example": "66713c5fd2abb5ba15a0ec9c"
                 },
-                "logTicket": {
+                "name": {
                     "type": "string",
-                    "example": "18276ff7-85cf-48d9-b4e5-02a4ad0d63c1"
-                },
-                "logLevel": {
-                    "type": "string",
-                    "example": "ERROR"
-                },
-                "logDate": {
-                    "type": "string",
-                    "example": "2024-06-18T07:50:55.476Z"
-                },
-                "errorDescription": {
-                    "type": "string",
-                    "example": "TypeError: woaaaah this error suck!!!"
-                },
-                "source": {
-                    "type": "object",
-                    "properties": {
-                        "module_name": {
-                            "type": "string",
-                            "example": "myfile.ts"
-                        }
-                    }
-                },
-                "eventCode": {
-                    "type": "string",
-                    "example": "ERR-0007"
-                },
-                "destination": {
-                    "type": "string",
-                    "example": "N/A"
-                },
-                "environment": {
-                    "type": "string",
-                    "example": "development"
+                    "example": "Sir Conan Doyle"
                 }
             }
         },
-        "errorPayload": {
+        "AddNewAuthor": {
             "type": "object",
             "properties": {
-                "logLevel": {
+                "name": {
                     "type": "string",
-                    "example": "ERROR"
-                },
-                "source": {
-                    "type": "object",
-                    "properties": {
-                        "hostname": {
-                            "type": "string",
-                            "example": "https://app.myhostname.io"
-                        },
-                        "module_name": {
-                            "type": "string",
-                            "example": "index.ts"
-                        }
-                    }
-                },
-                "errorDescription": {
-                    "type": "string",
-                    "example": "ReferrenceError: i dont know what iam doing"
-                },
-                "eventCode": {
-                    "type": "string",
-                    "example": "ERR-0007"
-                },
-                "environment": {
-                    "type": "string",
-                    "example": "development"
+                    "example": "J.K Rowling"
                 }
             }
         },
-        "postResponse": {
+        "NewAuthorResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "author": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "66713c5fd2abb5ba15a0ec9c"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example":"J.K Rowling"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "BookList": {
             "type": "object",
             "properties": {
                 "status": {
@@ -225,8 +209,95 @@
                     "type": "integer",
                     "example": 200
                 },
-                "details": {
-                    "$ref": "#/definitions/postResponseDetails"
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BookListDetails"
+                    }
+                }
+            }
+        },
+        "BookListDetails": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "66713c5fd2abb5ba15a0ec9c"
+                },
+                "code": {
+                    "type": "string",
+                    "example": "JK-45"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Once Upon a Time"
+                },
+                "author": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "example": "Shakespear"
+                        }
+                    }
+                }
+            }
+        },
+        "AddNewBook": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "DK-007"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Si Kancil Anak Coder"
+                },
+                "author": {
+                    "type": "string",
+                    "example": "Permaficus"
+                },
+                "stock": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "NewBookResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "data": {
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "66713c5fd2abb5ba15a0ec9c"
+                        },
+                        "code": {
+                            "type": "string",
+                            "example": "DK-007"
+                        },
+                        "title": {
+                            "type": "string",
+                            "example": "Si Kancil Anak Coder"
+                        },
+                        "author": {
+                            "type": "string",
+                            "example": "Permaficus"
+                        },
+                        "stock": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
                 }
             }
         },

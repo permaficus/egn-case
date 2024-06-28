@@ -27,13 +27,14 @@ model Book {
   stock       Int       @db.Int
   authorId    String    @db.ObjectId
   author      Author    @relation(fields: [authorId], references: [id])
-  transDetails  TransacDetails[]
+  transDetails  TransactDetails[]
 }
 model Member {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   code          String    @unique
   name          String    @db.String
   penalize      Boolean   @default(false)
+  until         DateTime?     
   transactions  Transaction[]
 }
 model Transaction {
@@ -42,10 +43,11 @@ model Transaction {
   returnDate  DateTime  @db.Date
   memberCode  String
   member      Member    @relation(fields: [memberCode], references: [code])
-  details     TransacDetails[]
+  status      Status    @default(Open)
+  books       TransactDetails[]
   rt          ReturnTransaction[]
 }
-model TransacDetails {
+model TransactDetails {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   transId     String    @db.ObjectId
   transRef    Transaction @relation(fields: [transId], references: [id])
@@ -57,4 +59,9 @@ model ReturnTransaction {
   date        DateTime  @db.Date
   transId     String    @db.ObjectId
   transRef    Transaction @relation(fields: [transId], references: [id])
+}
+
+enum Status {
+  Closed
+  Open
 }
