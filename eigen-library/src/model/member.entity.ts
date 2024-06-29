@@ -15,7 +15,7 @@ export const add = async (body: Member): Promise<Member | any> => {
                 ...body
             },
             omit: {
-                penalize: true,
+                penalized: true,
                 until: true
             }
         })

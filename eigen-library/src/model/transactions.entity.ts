@@ -1,7 +1,14 @@
 // Import necessary modules and functions from prisma and local types
 import { DB, prismaErrHandler } from "@/libs/prisma";
-import { ReturnTransaction, Transaction } from "@/types/defs";
+import { QueryInput, ReturnTransaction, Transaction } from "@/types/defs";
 
+export const transactionList = async (args?: QueryInput): Promise<Transaction[] | undefined> => {
+    let query: any = {...args}
+    return await DB.transaction.findMany({
+        where: query,
+        orderBy: { date: 'desc'}
+    });
+}
 // Define an async function to add a transaction
 export const addTransaction = async (body: Transaction): Promise<any> => {
     // Initialize an empty array to hold book details
@@ -16,18 +23,18 @@ export const addTransaction = async (body: Transaction): Promise<any> => {
         // Start a transaction in the database
         return await DB.$transaction(async model => {
             // Find the member and check if they are penalized
-            const { penalize, until }: any = await model.member.findFirst({
+            const { penalized, until }: any = await model.member.findFirst({
                 where: {
                     code: body.memberCode
                 },
                 select: {
-                    penalize: true,
+                    penalized: true,
                     until: true
                 }
             });
 
             // If the member is penalized, throw an error
-            if (penalize) {
+            if (penalized) {
                 throw new Error(`This member cannot borrow any books until: ${new Date(until)}#Code: 401`);
             }
 
@@ -125,11 +132,11 @@ export const addReturnTransaction = async (body: ReturnTransaction): Promise<obj
                 }
             });
             const currentDate = new Date();
-            // If the book is returned late, penalize the member
+            // If the book is returned late, penalized the member
             if (new Date(tdata.returnDate) < currentDate) {
                 await model.member.update({
                     data: {
-                        penalize: true, // Set the penalize flag to true
+                        penalized: true, // Set the penalized flag to true
                         until: new Date(currentDate.setDate(currentDate.getDate() + 3))
                     },
                     where: {
