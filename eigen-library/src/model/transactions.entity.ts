@@ -49,8 +49,12 @@ export const addTransaction = async (body: Transaction): Promise<any> => {
                     }
                 }
             })
-            if (currentlyBorrowed[0]._count.books >= 2) {
-                throw new Error(`This member already exceed the maximum number of borrowing. Currently has ${currentlyBorrowed[0]._count.books} books#Code: 401`)
+            if (currentlyBorrowed.length >= 2 
+                || currentlyBorrowed.filter(items => items._count.books >= 2).length !== 0
+                // @ts-ignore
+                || (currentlyBorrowed.filter(items => items._count.books === 1).length + body.books.length) > 2
+            ) {
+                throw new Error(`This member already exceed the maximum number of borrowing books#Code: 401`)
             }
 
             // Update the stock of books to decrement by 1
@@ -162,7 +166,7 @@ export const addReturnTransaction = async (body: ReturnTransaction): Promise<obj
             // Update the stock for all books in the transaction
             await model.book.updateMany({
                 where: {
-                    code: { in: tdata.details }
+                    code: { in: tdata.books.map((books:any) => books.isbn) }
                 },
                 data: {
                     stock: { increment: 1 } // Increase the stock by 1
