@@ -36,6 +36,22 @@ export const addTransaction = async (body: Transaction): Promise<any> => {
             if (penalized) {
                 throw new Error(`This member cannot borrow any books until: ${new Date(until)}#Code: 401`);
             }
+            const currentlyBorrowed = await model.transaction.findMany({
+                where: {
+                    memberCode: body.memberCode,
+                    status: 'Open'
+                },
+                include: {
+                    _count: {
+                        select: {
+                            books: true
+                        }
+                    }
+                }
+            })
+            if (currentlyBorrowed[0]._count.books >= 2) {
+                throw new Error(`This member already exceed the maximum number of borrowing. Currently has ${currentlyBorrowed[0]._count.books} books#Code: 401`)
+            }
 
             // Update the stock of books to decrement by 1
             await model.book.updateMany({
