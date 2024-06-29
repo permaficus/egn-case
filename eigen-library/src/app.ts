@@ -33,3 +33,5 @@ const main = async (portNumber: number) => {
 }
 // @ts-expect-error
 main(+SERVICE_LOCAL_PORT);
+
+export default httpServer

@@ -138,7 +138,8 @@ export const addReturnTransaction = async (body: ReturnTransaction): Promise<obj
                         { status: 'Open' }
                     ]
                 },
-                include: { books: { select: { isbn: true } } } // Include the book details
+                include: { books: { select: { isbn: true } } }, // Include the book details
+                orderBy: { returnDate: 'asc' }
             });
             if (!tdata) {
                 throw new Error(`There is no transaction from this member: ${body.memberCode}#Code: 404`)
