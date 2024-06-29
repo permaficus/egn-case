@@ -219,6 +219,36 @@
                     }
                 }
             }
+        },
+        "/api/v1/return-transactions": {
+            "post": {
+                "tags": [
+                    "Borrowing & Returning"
+                ],
+                "summary": "New Returning Transaction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AddNewReturning"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/AddNewReturningResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -579,6 +609,62 @@
                 "reason": {
                     "type": "string",
                     "example": "This member cannot borrow any books until: 2024/06/10"
+                }
+            }
+        },
+        "AddNewReturning": {
+            "type": "object",
+            "properties": {
+                "member": {
+                    "type": "string",
+                    "example": "M001"
+                }
+            }
+        },
+        "AddNewReturningResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "details": {
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "66713c5fd2abb5ba15a0ec9c"
+                        },
+                        "date": {
+                            "type": "string",
+                            "example": "2024-06-28T16:03:32.141Z"
+                        },
+                        "transId": {
+                            "type": "string",
+                            "example": "66713c5fd2abb5ba15a0eD10c"
+                        },
+                        "member": {
+                            "type": "string",
+                            "example": "M001"
+                        },
+                        "books": {
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            },
+                            "example": [
+                                {
+                                    "isbn": "JK-001"
+                                },
+                                {
+                                    "isbn": "JK-002"
+                                }
+                            ]
+                        }
+                    }
                 }
             }
         }
