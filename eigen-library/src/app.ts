@@ -16,6 +16,8 @@ const main = async (portNumber: number) => {
             `${NODE_ENV}`
           )}\nURL: ${chalk.blueBright(
             `http://localhost:${portNumber}`
+          )}\nAPI Docs: ${chalk.redBright(
+            `http://localhost:${portNumber}/api-docs`
           )}\nTime: ${chalk.blueBright(
               `${new Date(Date.now())}`
           )}\n\n-----------------------------------------`
