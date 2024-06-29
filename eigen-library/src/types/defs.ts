@@ -52,3 +52,4 @@ type FilterBook = {
 export type FilterTransaction = {
     books: FilterBook[];
 }
+export type PayloadSelector = 'Author' | 'Book' | 'Member' | 'Transaction'

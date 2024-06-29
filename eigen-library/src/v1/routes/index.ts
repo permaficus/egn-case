@@ -4,6 +4,7 @@ import { PathNotFound, errHandler } from '@/v1/middlewares/errHandler';
 import { fetchAllMembers, newMembership } from '@/controller/member.controller';
 import { fetchAllTransactions, newTransaction, returningBooks } from '@/controller/transact.controller';
 import { fetchAllAuthors, newAuthor } from '@/controller/author.controller';
+import { validateRequest } from '@/v1/middlewares/requestValidation';
 
 export const router = Router();
 
@@ -17,7 +18,7 @@ router.get(`/authors`, fetchAllAuthors);
 router.post(`/authors`, newAuthor)
 
 router.get(`/transactions`, fetchAllTransactions);
-router.post(`/transaction`, newTransaction)
+router.post(`/transaction`, validateRequest('Transaction'), newTransaction)
 
 router.post(`/return-transactions`, returningBooks)
 
