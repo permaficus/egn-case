@@ -7,7 +7,7 @@ How To Run (For Library App):
 1.
 
 ```sh
-npm ci
+npm install
 ```
 
 2.
