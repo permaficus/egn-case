@@ -83,3 +83,12 @@ export const add = async (body: Member): Promise<Member | any> => {
         prismaErrHandler(error)
     }
 }
+export const destroy = async (code: string | undefined): Promise<object | undefined> => {
+    try {
+        return await DB.member.delete({
+            where: { code: code }
+        })
+    } catch (error: any) {
+        prismaErrHandler(error)
+    }
+}

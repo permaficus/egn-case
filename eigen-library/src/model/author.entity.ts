@@ -17,3 +17,19 @@ export const add = async (body: Author ): Promise<Author | undefined> => {
         prismaErrHandler(error)
     }
 }
+export const destroy = async (name: string): Promise<object | undefined> => {
+    try {
+        return await DB.$transaction(async model => {
+            const _id: any = await model.author.findFirst({
+                where: { name: { equals: name } }
+            });
+            if (_id) {
+                return await model.author.delete({
+                    where: { id: _id.id }
+                })
+            }
+        })
+    } catch (error: any) {
+        prismaErrHandler(error)
+    }
+}

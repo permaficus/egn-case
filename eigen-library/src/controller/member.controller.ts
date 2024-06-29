@@ -29,3 +29,19 @@ export const newMembership = async (req: Request, res: Response, next: NextFunct
         next(error)
     }
 }
+/**
+ * 
+ * FOR TESTING PURPOSE
+ */
+export const deleteMember = async (req: Request, res: Response, next: NextFunction) => {
+    const { code }: any = req.query
+    try {
+        const response = await Members.destroy(code);
+        res.status(201).json({
+            status: 'Deleted'
+        }).end();
+    } catch (error: any) {
+        res.status(error.statusCode);
+        next(error)
+    }
+}

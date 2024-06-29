@@ -32,3 +32,15 @@ export const newAuthor = async (req: Request, res: Response, next: NextFunction)
         next(error)
     }
 }
+export const deleteAuthor = async(req: Request, res: Response, next: NextFunction) => {
+    const { name }: any = req.query
+    try {
+        const response = await Authors.destroy(name);
+        res.status(201).json({
+            operations: 'Succeeded'
+        })
+    } catch (error: any) {
+        res.status(error.statusCode);
+        next(error)
+    }
+}

@@ -62,3 +62,12 @@ export const add = async (body: Book): Promise<Book | undefined> => {
         prismaErrHandler(error);
     }
 }
+export const destroy = async (code: string): Promise<object | undefined>  => {
+    try {
+        return await DB.book.delete({
+            where: { code: code }
+        })
+    } catch (error: any) {
+        prismaErrHandler(error)
+    }
+}
