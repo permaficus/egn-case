@@ -33,7 +33,7 @@ model Member {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   code          String    @unique
   name          String    @db.String
-  penalize      Boolean   @default(false)
+  penalized     Boolean   @default(false)
   until         DateTime?     
   transactions  Transaction[]
 }
