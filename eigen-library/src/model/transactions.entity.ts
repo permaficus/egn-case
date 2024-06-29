@@ -32,7 +32,6 @@ export const addTransaction = async (body: Transaction): Promise<any> => {
                     until: true
                 }
             });
-
             // If the member is penalized, throw an error
             if (penalized) {
                 throw new Error(`This member cannot borrow any books until: ${new Date(until)}#Code: 401`);

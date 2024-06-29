@@ -19,7 +19,6 @@ router.post(`/authors`, newAuthor)
 router.get(`/transactions`, fetchAllTransactions);
 router.post(`/transaction`, newTransaction)
 
-router.get(`/return-transactions`);
 router.post(`/return-transactions`, returningBooks)
 
 router.use(PathNotFound);

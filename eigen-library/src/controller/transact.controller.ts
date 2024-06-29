@@ -1,6 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { Transactions } from "@/model";
 
+export const fetchAllTransactions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const response = await Transactions.transactionList(req.query);
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
+            data: response
+        })
+    } catch (error: any) {
+        res.status(error.statusCode);
+        next(error)
+    }
+}
 export const newTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const response = await Transactions.addTransaction({
