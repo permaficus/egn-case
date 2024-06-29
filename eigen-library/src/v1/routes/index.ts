@@ -9,13 +9,13 @@ import { validateRequest } from '@/v1/middlewares/requestValidation';
 export const router = Router();
 
 router.get(`/books`, fetchAllBooks);
-router.post(`/books`, addNewBook)
+router.post(`/books`, validateRequest('Book'), addNewBook)
 
 router.get(`/members`, fetchAllMembers);
-router.post(`/members`, newMembership)
+router.post(`/members`, validateRequest('Member'), newMembership)
 
 router.get(`/authors`, fetchAllAuthors);
-router.post(`/authors`, newAuthor)
+router.post(`/authors`, validateRequest('Author'), newAuthor)
 
 router.get(`/transactions`, fetchAllTransactions);
 router.post(`/transaction`, validateRequest('Transaction'), newTransaction)
