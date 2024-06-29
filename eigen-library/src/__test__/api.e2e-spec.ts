@@ -46,7 +46,7 @@ describe('API Testing', () => {
         const res = await request(httpServer).get('/api/v1/author');
         expect(res.statusCode).toBe(404)
       });
-      it('Should return 200 - GET', async () => {
+      it('Getting Author List: Should return 200 - GET', async () => {
         const res = await request(httpServer).get('/api/v1/authors');
         expect(res.statusCode).toBe(200);
         expect(res.body).toHaveProperty('status');
@@ -71,7 +71,7 @@ describe('API Testing', () => {
         const res = await request(httpServer).get('/api/v1/book');
         expect(res.statusCode).toBe(404)
       });
-      it('Should return 200 - GET', async () => {
+      it('Getting Book List: Should return 200 - GET', async () => {
         const res = await request(httpServer).get('/api/v1/books');
         expect(res.statusCode).toBe(200);
         expect(res.body).toHaveProperty('status');
