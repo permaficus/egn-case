@@ -31,5 +31,5 @@ const main = async (portNumber: number) => {
     console.error(`${chalk.redBright(error.message)}`)
   });
 }
-// @ts-ignore
+// @ts-expect-error
 main(+SERVICE_LOCAL_PORT);
