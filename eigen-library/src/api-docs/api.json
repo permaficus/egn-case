@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
       "title": "Eigen Library API Documentation",
-      "description": "There is only one endpoint for this app, so this should be an easy read. For Message Broker request body requirement, please refer to [readme](https://github.com/permaficus/5log-api#readme) on github.<br> DISCLAIMER! this documentation is still under development, Expect changes in the future",
+      "description": "",
       "contact": {
         "email": "abukhalif2019@gmail.com"
       },
@@ -24,7 +24,15 @@
       },
       {
         "name": "Books",
-        "description": "Everything about Books API endpoints"
+        "description": "Everything about Book API endpoints"
+      },
+      {
+        "name": "Members",
+        "description": "Everything about Member API endpoints"
+      },
+      {
+        "name": "Borrowing & Returning",
+        "description": "Everything about borrowing transaction and returning API endpoints"
       }
     ],
     "paths": {
@@ -117,6 +125,94 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/definitions/NewBookResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/members": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Member List",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/MemberList"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Add New Membership",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AddNewMember"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/NewMemberResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/transaction": {
+            "post": {
+                "tags": [
+                    "Borrowing & Returning"
+                ],
+                "summary": "New Borrowing Transaction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AddNewBorrowing"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/AddNewBorrowingResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "On Penalized Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/NotAllowedResponse"
                                 }
                             }
                         }
@@ -254,13 +350,13 @@
                     "type": "string",
                     "example": "Si Kancil Anak Coder"
                 },
-                "author": {
-                    "type": "string",
-                    "example": "Permaficus"
-                },
                 "stock": {
                     "type": "integer",
                     "example": 1
+                },
+                "author": {
+                    "type": "string",
+                    "example": "Permaficus"
                 }
             }
         },
@@ -301,49 +397,188 @@
                 }
             }
         },
-        "postResponseDetails": {
+        "MemberList": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MemberListDetails"
+                    }
+                }
+            }
+        },
+        "MemberListDetails": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "string",
-                    "example": "<some id>"
+                    "example": "66713c5fd2abb5ba15a0ec9c"
                 },
-                "logLevel": {
+                "code": {
                     "type": "string",
-                    "example": "ERROR"
+                    "example": "M001"
                 },
-                "logDate": {
+                "name": {
                     "type": "string",
-                    "example": "2024-06-19T07:50:55.476Z"
+                    "example": "Homelander"
                 },
-                "errorDescription": {
+                "penalized": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "until": {
                     "type": "string",
-                    "example": "ReferrenceError: i dont know what iam doing"
+                    "example": "2024-07-05T15:44:40.923+00:00"
                 },
-                "source": {
+                "books": {
                     "type": "object",
                     "properties": {
-                        "hostname": {
-                            "type": "string",
-                            "example": "https://app.myhostname.io"
+                        "total": {
+                            "type": "integer",
+                            "example": 1
                         },
-                        "module_name": {
-                            "type": "string",
-                            "example": "index.ts"
+                        "titles": {
+                            "type": "array",
+                            "example": ["Dragon Ball", "Sinchan"]
                         }
                     }
-                },
-                "eventCode": {
+                }
+            }
+        },
+        "AddNewMember": {
+            "type": "object",
+            "properties": {
+                "code": {
                     "type": "string",
-                    "example": "ERR-0007"
+                    "example": "M001"
                 },
-                "destination": {
+                "name": {
                     "type": "string",
-                    "example": "N/A"
+                    "example": "Wikojo"
+                }
+            }
+        },
+        "NewMemberResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
                 },
-                "environment": {
+                "code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "details": {
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "66713c5fd2abb5ba15a0ec9c"
+                        },
+                        "code": {
+                            "type": "string",
+                            "example": "M001"
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "Wikojo"
+                        }
+                    }
+                }
+            }
+        },
+        "AddNewBorrowing": {
+            "type": "object",
+            "properties": {
+                "member": {
                     "type": "string",
-                    "example": "development"
+                    "example": "M001"
+                },
+                "books": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": ["BOOK-1", "BOOK-2"]
+                }
+            }
+        },
+        "AddNewBorrowingResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "details": {
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "66713c5fd2abb5ba15a0ec9c"
+                        },
+                        "date": {
+                            "type": "string",
+                            "example": "2024-06-28T16:03:32.141Z"
+                        },
+                        "returnDate": {
+                            "type": "string",
+                            "example": "2024-07-05T16:03:32.141Z"
+                        },
+                        "memberCode": {
+                            "type": "string",
+                            "example": "M001"
+                        },
+                        "status": {
+                            "type": "string",
+                            "example": "Open"
+                        },
+                        "books": {
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            },
+                            "example": [
+                                {
+                                    "code": "BOOK-1",
+                                    "title": "Si Kancil Coder Sejati"
+                                },
+                                {
+                                    "code": "BOOK-2",
+                                    "title": "Si Musang Belajar Go"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "NotAllowedResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "ERR_UNAUTHORIZED"
+                },
+                "code": {
+                    "type": "integer",
+                    "example": 401
+                },
+                "reason": {
+                    "type": "string",
+                    "example": "This member cannot borrow any books until: 2024/06/10"
                 }
             }
         }
