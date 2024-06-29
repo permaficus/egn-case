@@ -29,3 +29,15 @@ export const addNewBook = async (req: Request, res: Response, next: NextFunction
         next(error)
     }
 }
+export const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+    const { code }: any = req.query;
+    try {
+        const response = await Books.destroy(code);
+        res.status(201).json({
+            operations: 'Succeeded'
+        })
+    } catch (error: any) {
+        res.status(error.statusCode);
+        next(error)
+    }
+}
