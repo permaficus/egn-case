@@ -22,6 +22,7 @@ export interface Member {
     name: string
     penalized?: boolean
     until?: Date
+    borrowing?: any[]
 }
 export interface Transaction {
     id?: string
@@ -37,4 +38,17 @@ export interface Details {
 }
 export interface ReturnTransaction {
     memberCode: string
+}
+export interface QueryInput {
+    status?: string
+    id?: string
+}
+type FilterBook = {
+    isbn: string,
+    bookIsbn: {
+        title: string;
+    }
+}
+export type FilterTransaction = {
+    books: FilterBook[];
 }
