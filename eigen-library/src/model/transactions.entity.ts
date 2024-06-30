@@ -33,7 +33,10 @@ export const addTransaction = async (body: Transaction): Promise<any> => {
                 }
             });
             // If the member is penalized, throw an error
-            if (penalized) {
+            let today = new Date();
+            const _until = new Date(until);
+
+            if (penalized && _until > today) {
                 throw new Error(`This member cannot borrow any books until: ${new Date(until)}#Code: 401`);
             }
             const currentlyBorrowed = await model.transaction.findMany({
@@ -83,7 +86,6 @@ export const addTransaction = async (body: Transaction): Promise<any> => {
             }
 
             // Create the transaction
-            let today = new Date();
             const t = await model.transaction.create({
                 data: {
                     date: new Date(),
